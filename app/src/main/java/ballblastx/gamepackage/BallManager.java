@@ -30,9 +30,7 @@ public class BallManager {
 
     public void addBall() {
         if (System.currentTimeMillis() - lastBallAddTime > Settings.ballAddingFrequency && totalCount > 0 &&
-                balls.size() < 3 + Math.sqrt(gameLevel)
-                && balls.size() < 1
-                ) {
+                balls.size() < 3 + Math.sqrt(gameLevel)) {
             int ballPoint = Settings.getRandom().nextInt(gameLevel * 100/4 + 1) + 1;
             totalCount -= ballPoint;
             Ball ball = new Ball(getRandomBallSize(), ballPoint);
