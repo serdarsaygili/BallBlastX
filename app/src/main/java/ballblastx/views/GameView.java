@@ -9,7 +9,9 @@ import android.view.View;
 import ballblastx.BallBlastXActivity;
 import ballblastx.gamepackage.BallManager;
 import ballblastx.gamepackage.BulletManager;
+import ballblastx.gamepackage.FpsCounter;
 import ballblastx.gamepackage.Player;
+import ballblastx.gamepackage.Settings;
 import ballblastx.libraries.Helper;
 
 public class GameView extends View implements Runnable {
@@ -21,13 +23,14 @@ public class GameView extends View implements Runnable {
     BallManager ballManager;
     Player player;
     boolean isFingerPressed;
+    FpsCounter fps;
 
     public GameView(BallBlastXActivity context) {
         super(context);
         bulletManager = new BulletManager();
         ballManager = new BallManager(bulletManager, 1);
         player = new Player(bulletManager);
-
+        fps = new FpsCounter();
 
         paint = new Paint();
         paint.setColor(Color.RED);
@@ -40,6 +43,8 @@ public class GameView extends View implements Runnable {
         bulletManager.onDraw(canvas, paint);
         ballManager.onDraw(canvas, paint);
 
+        // Debug
+        fps.onDraw(canvas, paint);
     }
 
     @Override
@@ -73,7 +78,7 @@ public class GameView extends View implements Runnable {
 
             long end = System.currentTimeMillis();
             long computationDuration = end - start;
-            Helper.sleep(20 - computationDuration);
+            Helper.sleep(Settings.screenRefreshRequestDuration - computationDuration);
         }
     }
 
@@ -85,6 +90,8 @@ public class GameView extends View implements Runnable {
         bulletManager.removeBullets();
         ballManager.addBall();
         ballManager.moveBalls();
+
+        fps.addRun();
     }
 
     public void stop() {

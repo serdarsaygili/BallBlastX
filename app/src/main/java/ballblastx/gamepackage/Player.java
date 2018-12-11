@@ -11,7 +11,7 @@ public class Player {
 
     public Player(BulletManager bulletManager) {
         x = BallBlastXActivity.instance.width / 2;
-        y = BallBlastXActivity.instance.height * Settings.playerHeightMultipllier;
+        y = BallBlastXActivity.instance.height * Settings.playerHorizontalPositionMultiplier;
         this.bulletManager = bulletManager;
     }
 
@@ -21,7 +21,7 @@ public class Player {
 
     public void onDraw(Canvas canvas, Paint paint) {
         paint.setColor(0xff00ff00);
-        canvas.drawCircle(x, y, 25, paint);
+        canvas.drawCircle(x, y, Settings.playerRadius, paint);
     }
 
     public void fireBullet() {

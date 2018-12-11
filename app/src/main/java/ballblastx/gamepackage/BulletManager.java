@@ -15,7 +15,7 @@ public class BulletManager {
         lastBulletFireTime = System.currentTimeMillis();
     }
 
-    public void addBullet(float x, float y) {
+    public synchronized void addBullet(float x, float y) {
         if (System.currentTimeMillis() - lastBulletFireTime > 100) {
             Bullet bullet = new Bullet(x, y);
             Bullets.add(bullet);
@@ -24,7 +24,7 @@ public class BulletManager {
         }
     }
 
-    public void removeBullets() {
+    public synchronized void removeBullets() {
         for (int i = Bullets.size() - 1; i >= 0; i--) {
             Bullet bullet = Bullets.get(i);
             if (bullet.y < -5) {
@@ -39,8 +39,9 @@ public class BulletManager {
         }
     }
 
-    public void onDraw(Canvas canvas, Paint paint) {
+    public synchronized void onDraw(Canvas canvas, Paint paint) {
         paint.setColor(0xff000000);
+        paint.setStyle(Paint.Style.FILL);
 
         for (Bullet bullet : Bullets) {
             bullet.onDraw(canvas, paint);

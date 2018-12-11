@@ -10,6 +10,7 @@ import android.view.View;
 import ballblastx.BallBlastXActivity;
 import ballblastx.R;
 import ballblastx.enums.GameMode;
+import ballblastx.gamepackage.Settings;
 import ballblastx.libraries.Helper;
 
 public class LoadingView extends View implements Runnable {
@@ -33,7 +34,10 @@ public class LoadingView extends View implements Runnable {
         paint.setColor(Color.RED);
 
         canvas.drawText("Loading " + status, 50, 50, paint);
-        isDrawn = true;
+
+        if (BallBlastXActivity.instance.width > 100 && BallBlastXActivity.instance.height > 0) {
+            isDrawn = true;
+        }
     }
 
     int status = 0;
@@ -46,14 +50,22 @@ public class LoadingView extends View implements Runnable {
             this.postInvalidate();
         }
 
+        status = 3; // Loading Images
+        this.postInvalidate();
+        Helper.sleep(500);
+
         Bitmap bMap = BitmapFactory.decodeResource(getResources(), R.drawable.splash);
         Splash = Bitmap.createScaledBitmap(bMap, BallBlastXActivity.instance.width, BallBlastXActivity.instance.height, true);
 
-        for (int i = 1; i <= 10; i++) {
-            status = 10 * i;
-            this.postInvalidate();
-            Helper.sleep(200);
-        }
+        status = 2; // Setting configuration
+        this.postInvalidate();
+        Helper.sleep(200);
+
+        Settings.setConfiguration(BallBlastXActivity.instance.width, BallBlastXActivity.instance.height);
+
+        status = 1; // End of loading
+        this.postInvalidate();
+        Helper.sleep(200);
 
         this.postInvalidate(); //this function calls draw method
         BallBlastXActivity.instance.runOnUiThread(new Runnable() {
