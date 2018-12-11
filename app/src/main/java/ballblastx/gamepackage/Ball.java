@@ -62,7 +62,6 @@ public class Ball {
 
     public void onDraw(Canvas canvas, Paint paint) {
         float drawY = y;
-
         if (drawY > BallBlastXActivity.instance.height - radius) {
             drawY = BallBlastXActivity.instance.height - radius;
         }
@@ -70,7 +69,9 @@ public class Ball {
         paint.setColor(0xff0000ff);
         canvas.drawCircle(x, drawY, radius, paint);
         paint.setColor(0xffffffff);
-        paint.setTextSize(30);
-        canvas.drawText(count + "", x, drawY, paint);
+        paint.setTextSize(radius);
+
+        float correctY = (paint.descent() + paint.ascent()) / 2;
+        canvas.drawText(count + "", x, drawY - correctY, paint);
     }
 }

@@ -91,6 +91,8 @@ public class BallManager {
     }
 
     public void onDraw(Canvas canvas, Paint paint) {
+        paint.setTextAlign(Paint.Align.CENTER);
+
         for (Ball ball: balls) {
             ball.onDraw(canvas, paint);
         }
