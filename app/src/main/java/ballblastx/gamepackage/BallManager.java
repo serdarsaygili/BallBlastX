@@ -28,38 +28,43 @@ public class BallManager {
         return (Settings.getRandom().nextInt(3) + 1) * Settings.ballSizeCaliber;
     }
 
-    public synchronized void addBall() {
+    public void addBall() {
         if (System.currentTimeMillis() - lastBallAddTime > Settings.ballAddingFrequency && totalCount > 0 &&
                 balls.size() < 3 + Math.sqrt(gameLevel)) {
             int ballPoint = Settings.getRandom().nextInt(gameLevel * 100/4 + 1) + 1;
             totalCount -= ballPoint;
-            Ball ball = new Ball(getRandomBallSize(), ballPoint);
-            balls.add(ball);
+
+            synchronized (balls) {
+                Ball ball = new Ball(getRandomBallSize(), ballPoint);
+                balls.add(ball);
+            }
 
             lastBallAddTime = System.currentTimeMillis();
         }
 
     }
 
-    public synchronized void removeBall() {
-        for (int i = balls.size() - 1; i >= 0; i--) {
-            for (int j = bulletManager.Bullets.size() - 1; j >= 0; j--) {
-                if (Math.pow(Math.abs(balls.get(i).x - bulletManager.Bullets.get(j).x), 2) +
-                        Math.pow(Math.abs(balls.get(i).y - bulletManager.Bullets.get(j).y), 2) <=
-                        Math.pow(balls.get(i).radius + 2, 2)) {
-                    bulletManager.Bullets.remove(j);
-                    balls.get(i).count--;
+    public void removeBall() {
+        synchronized (balls) {
+            for (int i = balls.size() - 1; i >= 0; i--) {
+                for (int j = bulletManager.Bullets.size() - 1; j >= 0; j--) {
+                    if (Math.pow(Math.abs(balls.get(i).x - bulletManager.Bullets.get(j).x), 2) +
+                            Math.pow(Math.abs(balls.get(i).y - bulletManager.Bullets.get(j).y), 2) <=
+                            Math.pow(balls.get(i).radius + 2, 2)) {
+                        bulletManager.Bullets.remove(j);
+                        balls.get(i).count--;
+                    }
                 }
-            }
 
-            if (balls.get(i).count <= 0) {
-                popBall(balls.get(i));
-                balls.remove(i);
+                if (balls.get(i).count <= 0) {
+                    popBall(balls.get(i));
+                    balls.remove(i);
+                }
             }
         }
     }
 
-    public synchronized void popBall(Ball ball) {
+    public void popBall(Ball ball) {
         if (ball.radius >= 2 * Settings.ballSizeCaliber) {
             Ball childBall1 = new Ball(((int) ball.radius - Settings.ballSizeCaliber), ball.startCount / 2);
             Ball childBall2 = new Ball(((int) ball.radius - Settings.ballSizeCaliber), ball.startCount / 2);
@@ -90,11 +95,13 @@ public class BallManager {
         removeBall();
     }
 
-    public synchronized void onDraw(Canvas canvas, Paint paint) {
+    public void onDraw(Canvas canvas, Paint paint) {
         paint.setTextAlign(Paint.Align.CENTER);
 
-        for (Ball ball: balls) {
-            ball.onDraw(canvas, paint);
+        synchronized (balls) {
+            for (Ball ball: balls) {
+                ball.onDraw(canvas, paint);
+            }
         }
     }
 }

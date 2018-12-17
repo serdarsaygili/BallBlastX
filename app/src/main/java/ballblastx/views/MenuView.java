@@ -39,6 +39,6 @@ public class MenuView extends View {
             case MotionEvent.ACTION_UP:
                 break;
         }
-        return true;
+        return false;
     }
 }

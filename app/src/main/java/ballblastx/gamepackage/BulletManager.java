@@ -5,46 +5,62 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BulletManager {
     List<Bullet> Bullets;
     Long lastBulletFireTime;
+    ReentrantLock lock = new ReentrantLock();
 
     public BulletManager() {
         Bullets = new ArrayList<Bullet>();
         lastBulletFireTime = System.currentTimeMillis();
     }
 
-    public synchronized void addBullet(float x, float y) {
+    public void addBullet(float x, float y, int numBullets) {
         if (System.currentTimeMillis() - lastBulletFireTime > 100) {
-            Bullet bullet = new Bullet(x, y);
-            Bullets.add(bullet);
+
+            float leftStart = (1 - numBullets) * Settings.bulletWidth;
+            float addWidth = 2 * Settings.bulletWidth;
+
+            synchronized (Bullets) {
+                for (int i = 0; i < numBullets; ++i) {
+                    Bullet bullet = new Bullet(x + leftStart + i * addWidth, y);
+                    Bullets.add(bullet);
+                }
+            }
 
             lastBulletFireTime = System.currentTimeMillis();
         }
     }
 
-    public synchronized void removeBullets() {
-        for (int i = Bullets.size() - 1; i >= 0; i--) {
-            Bullet bullet = Bullets.get(i);
-            if (bullet.y < -5) {
-                Bullets.remove(i);
+    public void removeBullets() {
+        synchronized (Bullets) {
+            for (int i = Bullets.size() - 1; i >= 0; i--) {
+                Bullet bullet = Bullets.get(i);
+                if (bullet.y < -5) {
+                    Bullets.remove(i);
+                }
             }
         }
     }
 
     public void moveBullets() {
-        for (Bullet bullet : Bullets) {
-            bullet.move();
+        synchronized (Bullets) {
+            for (Bullet bullet : Bullets) {
+                bullet.move();
+            }
         }
     }
 
-    public synchronized void onDraw(Canvas canvas, Paint paint) {
+    public void onDraw(Canvas canvas, Paint paint) {
         paint.setColor(0xff000000);
         paint.setStyle(Paint.Style.FILL);
 
-        for (Bullet bullet : Bullets) {
-            bullet.onDraw(canvas, paint);
+        synchronized (Bullets) {
+            for (Bullet bullet : Bullets) {
+                bullet.onDraw(canvas, paint);
+            }
         }
     }
 }

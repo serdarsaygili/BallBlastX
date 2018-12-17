@@ -24,7 +24,7 @@ public class Player {
         canvas.drawCircle(x, y, Settings.playerRadius, paint);
     }
 
-    public void fireBullet() {
-        bulletManager.addBullet(x,y - 5);
+    public void fireBullet(int numBullets) {
+        bulletManager.addBullet(x,y - 5, numBullets);
     }
 }

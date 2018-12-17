@@ -1,5 +1,6 @@
 package ballblastx.views;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,8 +26,15 @@ public class GameView extends View implements Runnable {
     boolean isFingerPressed;
     FpsCounter fps;
 
+    Bitmap doubleBufferingImage;
+    Canvas fastCanvas;
+
     public GameView(BallBlastXActivity context) {
         super(context);
+
+        doubleBufferingImage = Bitmap.createBitmap(BallBlastXActivity.instance.width, BallBlastXActivity.instance.height, Bitmap.Config.ARGB_8888);
+        fastCanvas = new Canvas(doubleBufferingImage);
+
         bulletManager = new BulletManager();
         ballManager = new BallManager(bulletManager, 1);
         player = new Player(bulletManager);
@@ -39,12 +47,18 @@ public class GameView extends View implements Runnable {
 
     @Override
     public void onDraw(Canvas canvas) {
-        player.onDraw(canvas, paint);
-        bulletManager.onDraw(canvas, paint);
-        ballManager.onDraw(canvas, paint);
+        paint.setColor(0xffffffff);
+        paint.setStyle(Paint.Style.FILL);
+        fastCanvas.drawRect(0, 0, BallBlastXActivity.instance.width, BallBlastXActivity.instance.height, paint);
+
+        player.onDraw(fastCanvas, paint);
+        bulletManager.onDraw(fastCanvas, paint);
+        ballManager.onDraw(fastCanvas, paint);
 
         // Debug
-        fps.onDraw(canvas, paint);
+        fps.onDraw(fastCanvas, paint);
+
+        canvas.drawBitmap(doubleBufferingImage, 0, 0, null);
     }
 
     @Override
@@ -84,7 +98,7 @@ public class GameView extends View implements Runnable {
 
     public void calculateNextStep() {
         if (isFingerPressed) {
-            player.fireBullet();
+            player.fireBullet(5);
         }
         bulletManager.moveBullets();
         bulletManager.removeBullets();
