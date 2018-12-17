@@ -1,9 +1,6 @@
-*
-*/
-<<<<<<< HEAD
-!.gitignore
+#Folders
 .gradle/
 .idea/
-=======
-!.gitignore
->>>>>>> 1c7d82438ef39668ac5f369ccd1b723e47360b2c
+
+#Files
+local.properties
