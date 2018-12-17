@@ -12,6 +12,7 @@ import ballblastx.R;
 import ballblastx.enums.GameMode;
 import ballblastx.gamepackage.Settings;
 import ballblastx.libraries.Helper;
+import ballblastx.libraries.ImageContainer;
 
 public class LoadingView extends View implements Runnable {
 
@@ -45,23 +46,25 @@ public class LoadingView extends View implements Runnable {
     @Override
     public void run() {
         status = 0;
+
         while (!isDrawn) {
             Helper.sleep(200);
             this.postInvalidate();
         }
 
-        status = 3; // Loading Images
+        status = 3; // Setting configuration
         this.postInvalidate();
         Helper.sleep(500);
 
-        Bitmap bMap = BitmapFactory.decodeResource(getResources(), R.drawable.splash);
-        Splash = Bitmap.createScaledBitmap(bMap, BallBlastXActivity.instance.width, BallBlastXActivity.instance.height, true);
+        Settings.setConfiguration(BallBlastXActivity.instance.width, BallBlastXActivity.instance.height);
 
-        status = 2; // Setting configuration
+        status = 2; // Loading Images
         this.postInvalidate();
         Helper.sleep(200);
 
-        Settings.setConfiguration(BallBlastXActivity.instance.width, BallBlastXActivity.instance.height);
+        Bitmap bMap = BitmapFactory.decodeResource(getResources(), R.drawable.splash);
+        Splash = Bitmap.createScaledBitmap(bMap, BallBlastXActivity.instance.width, BallBlastXActivity.instance.height, true);
+        ImageContainer.CreateBullet();
 
         status = 1; // End of loading
         this.postInvalidate();

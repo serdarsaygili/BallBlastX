@@ -16,12 +16,15 @@ public class BallManager {
     Long lastBallAddTime;
     BulletManager bulletManager;
 
-    public BallManager(BulletManager bulletManager, int gameLevel) {
+    public BallManager(BulletManager bulletManager) {
         balls = new ArrayList<Ball>();
-        totalCount = gameLevel * 100;
-        this.gameLevel = gameLevel;
         this.bulletManager = bulletManager;
         lastBallAddTime = System.currentTimeMillis();
+    }
+
+    public void resetLevel(int level) {
+        gameLevel = level;
+        totalCount = level * 100;
     }
 
     private int getRandomBallSize() {
@@ -44,7 +47,9 @@ public class BallManager {
 
     }
 
-    public void removeBall() {
+    public int removeBall() {
+        int totalHit = 0;
+
         synchronized (balls) {
             for (int i = balls.size() - 1; i >= 0; i--) {
                 for (int j = bulletManager.Bullets.size() - 1; j >= 0; j--) {
@@ -53,6 +58,7 @@ public class BallManager {
                             Math.pow(balls.get(i).radius + 2, 2)) {
                         bulletManager.Bullets.remove(j);
                         balls.get(i).count--;
+                        ++totalHit;
                     }
                 }
 
@@ -62,6 +68,8 @@ public class BallManager {
                 }
             }
         }
+
+        return totalHit;
     }
 
     public void popBall(Ball ball) {
@@ -87,12 +95,17 @@ public class BallManager {
         }
     }
 
-    public void moveBalls() {
+    public int moveBalls() {
         for (Ball ball : balls) {
             ball.move();
         }
 
-        removeBall();
+        int totalHits = removeBall();
+        return totalHits;
+    }
+
+    public boolean hasCompletedBalls() {
+        return totalCount <= 0 && balls.size() == 0;
     }
 
     public void onDraw(Canvas canvas, Paint paint) {

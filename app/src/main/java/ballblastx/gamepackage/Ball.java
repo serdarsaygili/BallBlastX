@@ -28,6 +28,8 @@ public class Ball {
     }
 
     public void move() {
+        int groundStart = Settings.getGroundStart();
+
         x += velocityX;
 
         if (isGravityStarted) {
@@ -47,7 +49,7 @@ public class Ball {
 
             y += velocityY;
 
-            if (y > BallBlastXActivity.instance.height - radius) {
+            if (y > groundStart - radius) {
                 touchedGround = true;
                 velocityY = -velocityY;
                 velocityY -= Settings.gravity;

@@ -11,9 +11,11 @@ import ballblastx.BallBlastXActivity;
 import ballblastx.gamepackage.BallManager;
 import ballblastx.gamepackage.BulletManager;
 import ballblastx.gamepackage.FpsCounter;
+import ballblastx.gamepackage.GameStatus;
 import ballblastx.gamepackage.Player;
 import ballblastx.gamepackage.Settings;
 import ballblastx.libraries.Helper;
+import ballblastx.libraries.ImageContainer;
 
 public class GameView extends View implements Runnable {
 
@@ -24,8 +26,7 @@ public class GameView extends View implements Runnable {
     BallManager ballManager;
     Player player;
     boolean isFingerPressed;
-    FpsCounter fps;
-
+    GameStatus gameStatus;
     Bitmap doubleBufferingImage;
     Canvas fastCanvas;
 
@@ -36,27 +37,31 @@ public class GameView extends View implements Runnable {
         fastCanvas = new Canvas(doubleBufferingImage);
 
         bulletManager = new BulletManager();
-        ballManager = new BallManager(bulletManager, 1);
+        ballManager = new BallManager(bulletManager);
         player = new Player(bulletManager);
-        fps = new FpsCounter();
+        gameStatus = new GameStatus(ballManager, bulletManager);
 
-        paint = new Paint();
-        paint.setColor(Color.RED);
+        paint = ImageContainer.getPaint();
         start();
     }
 
     @Override
     public void onDraw(Canvas canvas) {
+        int w = BallBlastXActivity.instance.width;
+        int h = BallBlastXActivity.instance.height;
+
         paint.setColor(0xffffffff);
         paint.setStyle(Paint.Style.FILL);
-        fastCanvas.drawRect(0, 0, BallBlastXActivity.instance.width, BallBlastXActivity.instance.height, paint);
+        fastCanvas.drawRect(0, 0, w, h, paint);
+
+        paint.setColor(0xff667788);
+        int groundStart = Settings.getGroundStart();
+        fastCanvas.drawRect(0, groundStart, w, h, paint);
 
         player.onDraw(fastCanvas, paint);
         bulletManager.onDraw(fastCanvas, paint);
         ballManager.onDraw(fastCanvas, paint);
-
-        // Debug
-        fps.onDraw(fastCanvas, paint);
+        gameStatus.onDraw(fastCanvas, paint);
 
         canvas.drawBitmap(doubleBufferingImage, 0, 0, null);
     }
@@ -68,6 +73,7 @@ public class GameView extends View implements Runnable {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 isFingerPressed = true;
+                gameStatus.newActivity();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isFingerPressed) {
@@ -97,15 +103,20 @@ public class GameView extends View implements Runnable {
     }
 
     public void calculateNextStep() {
-        if (isFingerPressed) {
-            player.fireBullet(5);
-        }
-        bulletManager.moveBullets();
-        bulletManager.removeBullets();
-        ballManager.addBall();
-        ballManager.moveBalls();
+        if (gameStatus.isRunning()) {
+            if (isFingerPressed) {
+                player.fireBullet(5);
+            }
+            bulletManager.moveBullets();
+            bulletManager.removeBullets();
+            ballManager.addBall();
 
-        fps.addRun();
+            int totalHits = ballManager.moveBalls();
+            gameStatus.score += totalHits;
+
+            if (ballManager.hasCompletedBalls())
+                gameStatus.finishLevel();
+        }
     }
 
     public void stop() {

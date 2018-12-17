@@ -17,6 +17,10 @@ public class BulletManager {
         lastBulletFireTime = System.currentTimeMillis();
     }
 
+    public void resetLevel(int level) {
+        Bullets.clear();
+    }
+
     public void addBullet(float x, float y, int numBullets) {
         if (System.currentTimeMillis() - lastBulletFireTime > 100) {
 
@@ -54,13 +58,25 @@ public class BulletManager {
     }
 
     public void onDraw(Canvas canvas, Paint paint) {
-        paint.setColor(0xff000000);
-        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(0xffffff00);
+        //paint.setStyle(Paint.Style.FILL);
 
         synchronized (Bullets) {
             for (Bullet bullet : Bullets) {
                 bullet.onDraw(canvas, paint);
             }
         }
+
+        /*paint.setColor(0xffff8800);
+        paint.setStrokeWidth(1);
+        paint.setStyle(Paint.Style.STROKE);
+
+        synchronized (Bullets) {
+            for (Bullet bullet : Bullets) {
+                bullet.onDraw(canvas, paint);
+            }
+        }
+
+        paint.setStyle(Paint.Style.FILL);*/
     }
 }

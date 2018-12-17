@@ -11,7 +11,7 @@ public class Player {
 
     public Player(BulletManager bulletManager) {
         x = BallBlastXActivity.instance.width / 2;
-        y = BallBlastXActivity.instance.height * Settings.playerHorizontalPositionMultiplier;
+        y = Settings.playerVerticalPosition;
         this.bulletManager = bulletManager;
     }
 
