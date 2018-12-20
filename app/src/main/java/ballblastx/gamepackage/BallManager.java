@@ -22,7 +22,14 @@ public class BallManager {
         lastBallAddTime = System.currentTimeMillis();
     }
 
+    public void continueLevel() {
+    }
+
     public void resetLevel(int level) {
+        synchronized (balls) {
+            balls.clear();
+        }
+
         gameLevel = level;
         totalCount = level * 100;
     }
@@ -51,20 +58,22 @@ public class BallManager {
         int totalHit = 0;
 
         synchronized (balls) {
-            for (int i = balls.size() - 1; i >= 0; i--) {
-                for (int j = bulletManager.Bullets.size() - 1; j >= 0; j--) {
-                    if (Math.pow(Math.abs(balls.get(i).x - bulletManager.Bullets.get(j).x), 2) +
-                            Math.pow(Math.abs(balls.get(i).y - bulletManager.Bullets.get(j).y), 2) <=
-                            Math.pow(balls.get(i).radius + 2, 2)) {
-                        bulletManager.Bullets.remove(j);
-                        balls.get(i).count--;
-                        ++totalHit;
+            synchronized (bulletManager.Bullets) {
+                for (int i = balls.size() - 1; i >= 0; i--) {
+                    for (int j = bulletManager.Bullets.size() - 1; j >= 0; j--) {
+                        if (Math.pow(Math.abs(balls.get(i).x - bulletManager.Bullets.get(j).x), 2) +
+                                Math.pow(Math.abs(balls.get(i).y - bulletManager.Bullets.get(j).y), 2) <=
+                                Math.pow(balls.get(i).radius + 2, 2)) {
+                            bulletManager.Bullets.remove(j);
+                            balls.get(i).count--;
+                            ++totalHit;
+                        }
                     }
-                }
 
-                if (balls.get(i).count <= 0) {
-                    popBall(balls.get(i));
-                    balls.remove(i);
+                    if (balls.get(i).count <= 0) {
+                        popBall(balls.get(i));
+                        balls.remove(i);
+                    }
                 }
             }
         }

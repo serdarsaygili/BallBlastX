@@ -17,6 +17,10 @@ public class BulletManager {
         lastBulletFireTime = System.currentTimeMillis();
     }
 
+    public void continueLevel() {
+        lastBulletFireTime = System.currentTimeMillis();
+    }
+
     public void resetLevel(int level) {
         Bullets.clear();
     }

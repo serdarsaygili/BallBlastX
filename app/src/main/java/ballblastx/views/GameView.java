@@ -25,7 +25,6 @@ public class GameView extends View implements Runnable {
     BulletManager bulletManager;
     BallManager ballManager;
     Player player;
-    boolean isFingerPressed;
     GameStatus gameStatus;
     Bitmap doubleBufferingImage;
     Canvas fastCanvas;
@@ -38,8 +37,8 @@ public class GameView extends View implements Runnable {
 
         bulletManager = new BulletManager();
         ballManager = new BallManager(bulletManager);
-        player = new Player(bulletManager);
-        gameStatus = new GameStatus(ballManager, bulletManager);
+        player = new Player(bulletManager, ballManager);
+        gameStatus = new GameStatus(ballManager, bulletManager, player);
 
         paint = ImageContainer.getPaint();
         start();
@@ -58,7 +57,7 @@ public class GameView extends View implements Runnable {
         int groundStart = Settings.getGroundStart();
         fastCanvas.drawRect(0, groundStart, w, h, paint);
 
-        player.onDraw(fastCanvas, paint);
+        player.onDraw(fastCanvas, paint, gameStatus.isGameOver);
         bulletManager.onDraw(fastCanvas, paint);
         ballManager.onDraw(fastCanvas, paint);
         gameStatus.onDraw(fastCanvas, paint);
@@ -72,16 +71,16 @@ public class GameView extends View implements Runnable {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                isFingerPressed = true;
+                gameStatus.setFingerStatus(true);
                 gameStatus.newActivity();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (isFingerPressed) {
+                if (gameStatus.canMove()) {
                     player.move(event.getX());
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                isFingerPressed = false;
+                gameStatus.setFingerStatus(false);
                 break;
         }
         return true;
@@ -104,18 +103,19 @@ public class GameView extends View implements Runnable {
 
     public void calculateNextStep() {
         if (gameStatus.isRunning()) {
-            if (isFingerPressed) {
-                player.fireBullet(5);
+            if (ballManager.hasCompletedBalls()) {
+                gameStatus.finishLevel();
             }
+            else {
+                player.fireBullet(gameStatus.level + 2);
+            }
+
             bulletManager.moveBullets();
             bulletManager.removeBullets();
             ballManager.addBall();
 
             int totalHits = ballManager.moveBalls();
             gameStatus.score += totalHits;
-
-            if (ballManager.hasCompletedBalls())
-                gameStatus.finishLevel();
         }
     }
 

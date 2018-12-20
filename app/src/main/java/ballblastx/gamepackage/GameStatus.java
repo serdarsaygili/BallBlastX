@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import ballblastx.BallBlastXActivity;
 
 public class GameStatus {
+    public boolean isFingerPressed;
     public boolean isGameStarted;
     public boolean isLevelEnded;
     public boolean isGameOver;
@@ -15,47 +16,98 @@ public class GameStatus {
 
     BallManager ballManager;
     BulletManager bulletManager;
+    Player player;
 
-    public GameStatus(BallManager ballManager, BulletManager bulletManager) {
+    public GameStatus(BallManager ballManager, BulletManager bulletManager, Player player) {
         this.ballManager = ballManager;
         this.bulletManager = bulletManager;
+        this.player = player;
 
         isGameStarted = false;
         isGameEnded = false;
         isGameOver = false;
         isLevelEnded = false;
+        isFingerPressed = false;
         level = 1;
         score = 0;
 
         ballManager.resetLevel(level);
         bulletManager.resetLevel(level);
+        player.resetLevel(level);
     }
 
-    public boolean isRunning()
-    {
-        return isGameStarted && !isLevelEnded && !isGameOver && !isGameEnded;
+    private int levelEnder = -1;
+    public void gameStep() {
+        if (levelEnder > 0) {
+            --levelEnder;
+        }
+
+        if (levelEnder == 0) {
+            isGameStarted = false;
+            isLevelEnded = true;
+        }
+
+        if (player.checkIfGameOver()) {
+            isGameStarted = false;
+            isGameOver = true;
+        }
+    }
+
+    public boolean canMove() {
+        return isFingerPressed && !isGameOver && !isLevelEnded;
+    }
+
+    public boolean isRunning() {
+        gameStep();
+
+        return isGameStarted && isFingerPressed && !isLevelEnded && !isGameOver && !isGameEnded;
+    }
+
+    public void setFingerStatus(boolean isFingerPressed) {
+        this.isFingerPressed = isFingerPressed;
+
+        if (this.isFingerPressed) {
+            ballManager.continueLevel();
+            bulletManager.continueLevel(); // dont fire again, restart wait duration
+            player.continueLevel();
+        }
     }
 
     public void newActivity() {
-        if (!isGameStarted) {
+        if (isLevelEnded) {
+            startNextLevel(level + 1);
+        }
+        else if (isGameOver) {
+            startNextLevel(1);
+        }
+        else if (!isGameStarted) {
             isGameStarted = true;
         }
-        else if (isLevelEnded) {
-            startNextLevel();
+    }
+
+    public void finishLevel() { // an example of how to delay a result after a specific event
+        if (levelEnder == -1) {
+            levelEnder = (1000 / Settings.screenRefreshRequestDuration); // delay 50 frames, so total delay duration is 50 x 20 ms = 1 second
         }
     }
 
-    public void finishLevel() {
-        isLevelEnded = true;
-    }
-
-    public void startNextLevel() {
-        isGameStarted = false;
-        isLevelEnded = false;
-        ++level;
+    public void startNextLevel(int newLevel) {
+        level = newLevel;
 
         ballManager.resetLevel(level);
         bulletManager.resetLevel(level);
+        player.resetLevel(level);
+
+        isGameOver = false;
+        isGameStarted = false;
+        isGameEnded = false;
+        isLevelEnded = false;
+        isFingerPressed = false;
+        levelEnder = -1;
+
+        if (level == 1) {
+            score = 0;
+        }
     }
 
     public void onDraw(Canvas canvas, Paint paint) {
@@ -73,24 +125,28 @@ public class GameStatus {
 
         paint.setTextSize(Settings.largeTextSize);
 
-        if (!isGameStarted) {
-            drawTransparentBackground(canvas, paint);
-            canvas.drawText("Swipe to start level " + level, w / 2, h / 2, paint);
-        }
+        float textPositionX = w / 2;
+        float textPositionY = Settings.playerVerticalPosition / 2;
 
         if (isGameOver) {
             drawTransparentBackground(canvas, paint);
-            canvas.drawText("Game over", w / 2, h / 2, paint);
+            canvas.drawText("Game over", textPositionX, textPositionY, paint);
         }
-
-        if (isLevelEnded) {
+        else if (isLevelEnded) {
             drawTransparentBackground(canvas, paint);
-            canvas.drawText("End of level " + level, w / 2, h / 2, paint);
+            canvas.drawText("End of level " + level, textPositionX, textPositionY, paint);
         }
-
-        if (isGameEnded) {
+        else if (isGameEnded) {
             drawTransparentBackground(canvas, paint);
-            canvas.drawText("Congratulations", w / 2, h / 2, paint);
+            canvas.drawText("Congratulations", textPositionX, textPositionY, paint);
+        }
+        else if (!isGameStarted) {
+            drawTransparentBackground(canvas, paint);
+            canvas.drawText("Swipe to start level " + level, textPositionX, textPositionY, paint);
+        }
+        else if (!isFingerPressed) {
+            drawTransparentBackground(canvas, paint);
+            canvas.drawText("Paused", textPositionX, textPositionY, paint);
         }
     }
 
