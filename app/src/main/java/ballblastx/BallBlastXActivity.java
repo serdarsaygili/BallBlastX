@@ -1,10 +1,17 @@
 package ballblastx;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
 import ballblastx.enums.GameMode;
+import ballblastx.gamepackage.Settings;
 import ballblastx.views.GameView;
 import ballblastx.views.LoadingView;
 import ballblastx.views.MenuView;
@@ -61,5 +68,65 @@ public class BallBlastXActivity  extends Activity {
                 ;
 
         view.setSystemUiVisibility(uiOptions);
+    }
+
+    public void writeSettings() {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput("BallBlastX_Settings.txt", Context.MODE_PRIVATE));
+
+            outputStreamWriter.write("BestScore=" + Settings.bestScore + "|");
+
+            outputStreamWriter.close();
+        } catch (Exception e) {
+        }
+    }
+
+    public void readSettings() {
+        try {
+            InputStream inputStream = this.openFileInput("BallBlastX_Settings.txt");
+
+            if (inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((receiveString = bufferedReader.readLine()) != null)
+                {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+
+                String result = stringBuilder.toString();
+                applySettings(result);
+            }
+        }
+        catch (Exception e) {
+            writeSettings();
+        }
+    }
+
+    private void applySettings(String settings)
+    {
+        String[] all = settings.split("\\|");
+
+        for (String item : all)
+        {
+            if (item != null && item.length() > 1)
+            {
+                String[] details = item.split("\\=");
+
+                if (details.length == 2)
+                {
+                    String name = details[0];
+
+                    if (name.compareTo("BestScore") == 0)
+                    {
+                        Settings.bestScore = Integer.parseInt(details[1]);
+                    }
+                }
+            }
+        }
     }
 }

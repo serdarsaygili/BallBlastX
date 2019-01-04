@@ -57,6 +57,7 @@ public class LoadingView extends View implements Runnable {
         Helper.sleep(500);
 
         Settings.setConfiguration(BallBlastXActivity.instance.width, BallBlastXActivity.instance.height);
+        BallBlastXActivity.instance.readSettings();
 
         status = 2; // Loading Images
         this.postInvalidate();

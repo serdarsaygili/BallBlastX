@@ -1,0 +1,8 @@
+1. Ball blast effect
+2. Gift (gold, multi-gold)
+3. Life (default: 3 life)
+4. Buy Upgrades by Gold (Num Bullets, Bullet power, Bullet latency, In-game Gold collection speed, Out-game Gold collection speed)
+5. Images: splash, menu, character (steps for walking right and left, waiting, firing, game over), 3 ball size, blast effect, bullet, gift, gold, life
+6. Advertisements: full screen, bottom
+7. Send Score to Server at the end of the game/level
+8. Top List: top 10 players with levels and scores
