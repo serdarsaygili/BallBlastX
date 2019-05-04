@@ -106,7 +106,7 @@ public class LoadingView extends View implements Runnable {
     {
         Bitmap tmp = BitmapFactory.decodeResource(getResources(), R.drawable.splash);
         Splash = Bitmap.createScaledBitmap(tmp, screenWidth, screenHeight, true);
-        int ballSize = screenWidth / 4;
+        int ballSize = Settings.maxBallSize;
 
         tmp = BitmapFactory.decodeResource(getResources(), R.drawable.ball1);
         Balls.add(Bitmap.createScaledBitmap(tmp, ballSize, ballSize, true));

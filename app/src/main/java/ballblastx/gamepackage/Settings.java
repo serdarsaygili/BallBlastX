@@ -26,6 +26,7 @@ public class Settings {
     public static int bestScore = 0;
     public static int velocityX = 5;
     public static List <Integer> maxVelocityYs;
+    public static int maxBallSize;
 
     private static Random random;
     public static Random getRandom() {
@@ -48,14 +49,14 @@ public class Settings {
         bulletWidth = (width / 90) / 2 * 2 + 1; // should be odd value to be symmetric
         bulletHeight = height / 100;
         playerVerticalPosition = height * 0.7f;
-        velocityX = width / 100;
-
+        velocityX = width / 120;
+        maxBallSize = width / 3;
 
         maxVelocityYs = new ArrayList<Integer>();
-        maxVelocityYs.add((int)(height * 1.1 / gravity));
-        maxVelocityYs.add((int)(height * 0.8 / gravity));
-        maxVelocityYs.add((int)(height * 0.6 / gravity));
-        maxVelocityYs.add((int)(height * 0.35 / gravity));
+        maxVelocityYs.add(24);
+        maxVelocityYs.add(20);
+        maxVelocityYs.add(17);
+        maxVelocityYs.add(15);
     }
 
     public static int getGroundStart() {
