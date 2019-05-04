@@ -21,6 +21,7 @@ public class LoadingView extends View implements Runnable {
 
     Paint paint;
     public static Bitmap Splash, ground;
+    public static Bitmap clouds[];
     public static List <Bitmap> Balls;
     public static List <Integer> ballSizes;
     private boolean isDrawn = false;
@@ -32,6 +33,7 @@ public class LoadingView extends View implements Runnable {
         paint = new Paint();
         Balls = new ArrayList<Bitmap>();
         ballSizes = new ArrayList<Integer>();
+        clouds = new Bitmap[2];
         start();
     }
 
