@@ -2,7 +2,6 @@ package ballblastx.views;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.View;
 import ballblastx.BallBlastXActivity;
 import ballblastx.gamepackage.BallManager;
 import ballblastx.gamepackage.BulletManager;
-import ballblastx.gamepackage.FpsCounter;
 import ballblastx.gamepackage.GameStatus;
 import ballblastx.gamepackage.Player;
 import ballblastx.gamepackage.Settings;
@@ -56,7 +54,7 @@ public class GameView extends View implements Runnable {
         paint.setColor(0xffB11848);
         int groundStart = Settings.getGroundStart();
         fastCanvas.drawRect(0, groundStart, w, h, paint);
-        fastCanvas.drawBitmap(LoadingView.ground, 0, groundStart - LoadingView.groundCorrectionHeigh, null);
+        fastCanvas.drawBitmap(LoadingView.ground, 0, groundStart - LoadingView.groundCorrectionHeight, null);
 
 
         player.onDraw(fastCanvas, paint, gameStatus.isGameOver);

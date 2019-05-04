@@ -23,8 +23,9 @@ public class LoadingView extends View implements Runnable {
     public static Bitmap Splash, ground;
     public static List <Bitmap> Balls;
     public static List <Integer> ballSizes;
+    public static List <Integer> maxVelocityYs;
     private boolean isDrawn = false;
-    public static int groundCorrectionHeigh;
+    public static int groundCorrectionHeight;
 
     public LoadingView(BallBlastXActivity context) {
         super(context);
@@ -32,6 +33,7 @@ public class LoadingView extends View implements Runnable {
         paint = new Paint();
         Balls = new ArrayList<Bitmap>();
         ballSizes = new ArrayList<Integer>();
+        maxVelocityYs = new ArrayList<Integer>();
         start();
     }
 
@@ -125,7 +127,7 @@ public class LoadingView extends View implements Runnable {
 
         tmp = BitmapFactory.decodeResource(getResources(), R.drawable.ground); //image should be 1000 * 100, our phone is 480X 800
         ground = Bitmap.createScaledBitmap(tmp, screenWidth, screenWidth * tmp.getHeight() / tmp.getWidth(), true);
-        groundCorrectionHeigh = 60 * tmp.getHeight() / tmp.getWidth();
+        groundCorrectionHeight = 60 * tmp.getHeight() / tmp.getWidth();
 
 
         int ballCount = Balls.size();
