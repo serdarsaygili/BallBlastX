@@ -3,17 +3,21 @@ package ballblastx.gamepackage;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import ballblastx.views.LoadingView;
+
 public class Cloud
 {
     float x;
     float y;
     float speed;
+    int cloudType;
 
-    private Cloud(float x, float y, float speed)
+    public Cloud(float x, float y, float speed, int cloudType)
     {
         this.x = x;
         this.y = y;
         this.speed = speed;
+        this.cloudType = cloudType;
     }
 
     public void move()
@@ -23,6 +27,6 @@ public class Cloud
 
     public void onDraw(Canvas canvas, Paint paint)
     {
-        canvas.drawBitmap();
+        canvas.drawBitmap(LoadingView.clouds[cloudType], x, y, null);
     }
 }

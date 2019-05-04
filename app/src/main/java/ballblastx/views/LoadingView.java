@@ -22,10 +22,12 @@ public class LoadingView extends View implements Runnable {
     Paint paint;
     public static Bitmap Splash, ground;
     public static Bitmap clouds[];
+    public static int cloudWidths[];
     public static List <Bitmap> Balls;
     public static List <Integer> ballSizes;
+    public static List <Integer> maxVelocityYs;
     private boolean isDrawn = false;
-    public static int groundCorrectionHeigh;
+    public static int groundCorrectionHeight;
 
     public LoadingView(BallBlastXActivity context) {
         super(context);
@@ -34,6 +36,8 @@ public class LoadingView extends View implements Runnable {
         Balls = new ArrayList<Bitmap>();
         ballSizes = new ArrayList<Integer>();
         clouds = new Bitmap[2];
+        cloudWidths = new int[2];
+        maxVelocityYs = new ArrayList<Integer>();
         start();
     }
 
@@ -76,10 +80,32 @@ public class LoadingView extends View implements Runnable {
         this.postInvalidate();
         Helper.sleep(200);
 
+        ImageContainer.CreateBullet();
+        loadImages(screenWidth, screenHeight);
+
+        status = 1; // End of loading
+        this.postInvalidate();
+        Helper.sleep(200);
+
+        this.postInvalidate(); //this function calls draw method
+        BallBlastXActivity.instance.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                BallBlastXActivity.instance.setView(GameMode.Splash);
+            }
+        });
+    }
+
+    public void start()
+    {
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    private void loadImages(int screenWidth, int screenHeight)
+    {
         Bitmap tmp = BitmapFactory.decodeResource(getResources(), R.drawable.splash);
         Splash = Bitmap.createScaledBitmap(tmp, screenWidth, screenHeight, true);
-        //480x800 4 de biri
-
         int ballSize = screenWidth / 4;
 
         tmp = BitmapFactory.decodeResource(getResources(), R.drawable.ball1);
@@ -103,10 +129,18 @@ public class LoadingView extends View implements Runnable {
         tmp = BitmapFactory.decodeResource(getResources(), R.drawable.ball10);
         Balls.add(Bitmap.createScaledBitmap(tmp, ballSize, ballSize, true));
 
+        cloudWidths[0] = screenWidth / 3;
+        cloudWidths[1] = screenWidth / 2;
+
+        tmp = BitmapFactory.decodeResource(getResources(), R.drawable.cloud1);
+        clouds[0] = Bitmap.createScaledBitmap(tmp, cloudWidths[0], cloudWidths[0] * tmp.getHeight() / tmp.getWidth(), true);
+
+        tmp = BitmapFactory.decodeResource(getResources(), R.drawable.cloud2);
+        clouds[1] = Bitmap.createScaledBitmap(tmp, cloudWidths[1], cloudWidths[1] * tmp.getHeight() / tmp.getWidth(), true);
+
         tmp = BitmapFactory.decodeResource(getResources(), R.drawable.ground); //image should be 1000 * 100, our phone is 480X 800
         ground = Bitmap.createScaledBitmap(tmp, screenWidth, screenWidth * tmp.getHeight() / tmp.getWidth(), true);
-        groundCorrectionHeigh = 60 * tmp.getHeight() / tmp.getWidth();
-
+        groundCorrectionHeight = 60 * tmp.getHeight() / tmp.getWidth();
 
         int ballCount = Balls.size();
         ballSizes.add(ballSize);
@@ -117,25 +151,5 @@ public class LoadingView extends View implements Runnable {
                 Balls.add(Bitmap.createScaledBitmap(Balls.get(i), ballSize, ballSize, true));
             }
         }
-
-        ImageContainer.CreateBullet();
-
-        status = 1; // End of loading
-        this.postInvalidate();
-        Helper.sleep(200);
-
-        this.postInvalidate(); //this function calls draw method
-        BallBlastXActivity.instance.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                BallBlastXActivity.instance.setView(GameMode.Splash);
-            }
-        });
-    }
-
-    public void start()
-    {
-        Thread thread = new Thread(this);
-        thread.start();
     }
 }

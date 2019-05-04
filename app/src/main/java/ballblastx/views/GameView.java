@@ -2,7 +2,6 @@ package ballblastx.views;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,7 +9,7 @@ import android.view.View;
 import ballblastx.BallBlastXActivity;
 import ballblastx.gamepackage.BallManager;
 import ballblastx.gamepackage.BulletManager;
-import ballblastx.gamepackage.FpsCounter;
+import ballblastx.gamepackage.CloudManager;
 import ballblastx.gamepackage.GameStatus;
 import ballblastx.gamepackage.Player;
 import ballblastx.gamepackage.Settings;
@@ -24,6 +23,7 @@ public class GameView extends View implements Runnable {
     Boolean isRunning;
     BulletManager bulletManager;
     BallManager ballManager;
+    CloudManager cloudManager;
     Player player;
     GameStatus gameStatus;
     Bitmap doubleBufferingImage;
@@ -36,6 +36,7 @@ public class GameView extends View implements Runnable {
         fastCanvas = new Canvas(doubleBufferingImage);
 
         bulletManager = new BulletManager();
+        cloudManager = new CloudManager();
         ballManager = new BallManager(bulletManager);
         player = new Player(bulletManager, ballManager);
         gameStatus = new GameStatus(ballManager, bulletManager, player);
@@ -56,9 +57,9 @@ public class GameView extends View implements Runnable {
         paint.setColor(0xffB11848);
         int groundStart = Settings.getGroundStart();
         fastCanvas.drawRect(0, groundStart, w, h, paint);
-        fastCanvas.drawBitmap(LoadingView.ground, 0, groundStart - LoadingView.groundCorrectionHeigh, null);
+        fastCanvas.drawBitmap(LoadingView.ground, 0, groundStart - LoadingView.groundCorrectionHeight, null);
 
-
+        cloudManager.onDraw(fastCanvas, paint);
         player.onDraw(fastCanvas, paint, gameStatus.isGameOver);
         bulletManager.onDraw(fastCanvas, paint);
         ballManager.onDraw(fastCanvas, paint);
@@ -112,6 +113,7 @@ public class GameView extends View implements Runnable {
                 player.fireBullet(gameStatus.level + 2);
             }
 
+            cloudManager.move();
             bulletManager.moveBullets();
             bulletManager.removeBullets();
             ballManager.addBall();
