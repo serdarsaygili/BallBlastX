@@ -54,8 +54,8 @@ public class Ball {
 
             if (y > groundStart - radius) {
                 touchedGround = true;
-                velocityY = -velocityY;
-                velocityY -= Settings.gravity;
+                velocityY = Settings.maxVelocityYs.get(ballSizeIndex);
+                velocityY = -10;
             }
 
         }
@@ -91,6 +91,6 @@ public class Ball {
         paint.setTextSize(radius);
 
         float correctY = (paint.descent() + paint.ascent()) / 2;
-        canvas.drawText(count + "", x, drawY - correctY, paint);
+        canvas.drawText(count + "", x, currentTopY + radius - correctY, paint);
     }
 }

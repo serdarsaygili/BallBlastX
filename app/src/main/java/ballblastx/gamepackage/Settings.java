@@ -1,5 +1,7 @@
 package ballblastx.gamepackage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Settings {
@@ -22,7 +24,8 @@ public class Settings {
     public static int bulletWidth = 5;
     public static int bulletHeight = 8;
     public static int bestScore = 0;
-    public static int velocityX = 6;
+    public static int velocityX = 5;
+    public static List <Integer> maxVelocityYs;
 
     private static Random random;
     public static Random getRandom() {
@@ -46,6 +49,13 @@ public class Settings {
         bulletHeight = height / 100;
         playerVerticalPosition = height * 0.7f;
         velocityX = width / 100;
+
+
+        maxVelocityYs = new ArrayList<Integer>();
+        maxVelocityYs.add((int)(height * 1.1 / gravity));
+        maxVelocityYs.add((int)(height * 0.8 / gravity));
+        maxVelocityYs.add((int)(height * 0.6 / gravity));
+        maxVelocityYs.add((int)(height * 0.35 / gravity));
     }
 
     public static int getGroundStart() {
