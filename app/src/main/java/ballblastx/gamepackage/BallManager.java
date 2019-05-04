@@ -6,13 +6,12 @@ import android.graphics.Paint;
 import java.util.ArrayList;
 import java.util.List;
 
+import ballblastx.views.LoadingView;
+
 public class BallManager {
     List<Ball> balls;
     private int totalCount;
     private int gameLevel;
-    private static final int smallBall = 25;
-    private static final int mediumBall = 50;
-    private static final int bigBall = 75;
     Long lastBallAddTime;
     BulletManager bulletManager;
 
@@ -34,10 +33,6 @@ public class BallManager {
         totalCount = level * 100;
     }
 
-    private int getRandomBallSize() {
-        return (Settings.getRandom().nextInt(3) + 1) * Settings.ballSizeCaliber;
-    }
-
     public void addBall() {
         if (System.currentTimeMillis() - lastBallAddTime > Settings.ballAddingFrequency && totalCount > 0 &&
                 balls.size() < 3 + Math.sqrt(gameLevel)) {
@@ -45,7 +40,9 @@ public class BallManager {
             totalCount -= ballPoint;
 
             synchronized (balls) {
-                Ball ball = new Ball(getRandomBallSize(), ballPoint);
+                int ballIndex = Settings.getRandom().nextInt(4);
+                int ballSize = LoadingView.ballSizes.get(ballIndex);
+                Ball ball = new Ball(ballSize, ballIndex, ballPoint);
                 balls.add(ball);
             }
 
@@ -82,9 +79,11 @@ public class BallManager {
     }
 
     public void popBall(Ball ball) {
-        if (ball.radius >= 2 * Settings.ballSizeCaliber) {
-            Ball childBall1 = new Ball(((int) ball.radius - Settings.ballSizeCaliber), ball.startCount / 2);
-            Ball childBall2 = new Ball(((int) ball.radius - Settings.ballSizeCaliber), ball.startCount / 2);
+        if (ball.ballSizeIndex < 3) {
+            int ballSizeIndex = ball.ballSizeIndex + 1;
+            int ballSize = LoadingView.ballSizes.get(ball.ballSizeIndex + 1);
+            Ball childBall1 = new Ball(ballSize, ballSizeIndex, ball.startCount / 2);
+            Ball childBall2 = new Ball(ballSize, ballSizeIndex, ball.startCount / 2);
             childBall1.x = ball.x;
             childBall1.y = ball.y;
             childBall1.velocityY = -10;

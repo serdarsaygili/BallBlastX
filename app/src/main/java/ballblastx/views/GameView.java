@@ -49,13 +49,15 @@ public class GameView extends View implements Runnable {
         int w = BallBlastXActivity.instance.width;
         int h = BallBlastXActivity.instance.height;
 
-        paint.setColor(0xffffffff);
+        paint.setColor(0xff94EEE9);
         paint.setStyle(Paint.Style.FILL);
         fastCanvas.drawRect(0, 0, w, h, paint);
 
-        paint.setColor(0xff667788);
+        paint.setColor(0xffB11848);
         int groundStart = Settings.getGroundStart();
         fastCanvas.drawRect(0, groundStart, w, h, paint);
+        fastCanvas.drawBitmap(LoadingView.ground, 0, groundStart - LoadingView.groundCorrectionHeigh, null);
+
 
         player.onDraw(fastCanvas, paint, gameStatus.isGameOver);
         bulletManager.onDraw(fastCanvas, paint);

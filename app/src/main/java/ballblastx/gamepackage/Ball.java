@@ -7,15 +7,18 @@ import java.io.Console;
 import java.util.Random;
 
 import ballblastx.BallBlastXActivity;
+import ballblastx.views.LoadingView;
 
 public class Ball {
     float x, y, radius, velocityX, velocityY, startY;
+    public int ballSizeIndex;
     int count, startCount;
     boolean isGravityStarted = false;
     boolean touchedGround = false;
 
-    public Ball(float radius, int count) {
-        this.radius = radius;
+    public Ball(float diamater, int ballSizeIndex, int count) {
+        this.ballSizeIndex = ballSizeIndex;
+        this.radius = diamater / 2;
         this.count = count;
         this.startCount = count;
 
@@ -68,8 +71,22 @@ public class Ball {
             drawY = BallBlastXActivity.instance.height - radius;
         }
 
-        paint.setColor(0xff0000ff);
-        canvas.drawCircle(x, drawY, radius, paint);
+        int ballIndex = 0;
+
+        for (int i = 9; i >= 0; i--) {
+            if (count < i * 10) {
+                ballIndex = i;
+            }
+        }
+
+        ballIndex += ballSizeIndex * 10;
+        float currentTopY = drawY - radius;
+        if (currentTopY + 2 * radius > Settings.getGroundStart()) {
+            currentTopY = Settings.getGroundStart() - 2 * radius;
+        }
+
+        canvas.drawBitmap(LoadingView.Balls.get(ballIndex), x - radius, currentTopY, null);
+
         paint.setColor(0xffffffff);
         paint.setTextSize(radius);
 
