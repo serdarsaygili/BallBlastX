@@ -22,6 +22,7 @@ public class Settings {
     public static int bulletWidth = 5;
     public static int bulletHeight = 8;
     public static int bestScore = 0;
+    public static int velocityX = 6;
 
     private static Random random;
     public static Random getRandom() {
@@ -44,6 +45,7 @@ public class Settings {
         bulletWidth = (width / 90) / 2 * 2 + 1; // should be odd value to be symmetric
         bulletHeight = height / 100;
         playerVerticalPosition = height * 0.7f;
+        velocityX = width / 100;
     }
 
     public static int getGroundStart() {

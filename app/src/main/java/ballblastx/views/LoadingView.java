@@ -74,10 +74,32 @@ public class LoadingView extends View implements Runnable {
         this.postInvalidate();
         Helper.sleep(200);
 
+        ImageContainer.CreateBullet();
+        loadImages(screenWidth, screenHeight);
+
+        status = 1; // End of loading
+        this.postInvalidate();
+        Helper.sleep(200);
+
+        this.postInvalidate(); //this function calls draw method
+        BallBlastXActivity.instance.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                BallBlastXActivity.instance.setView(GameMode.Splash);
+            }
+        });
+    }
+
+    public void start()
+    {
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    private void loadImages(int screenWidth, int screenHeight)
+    {
         Bitmap tmp = BitmapFactory.decodeResource(getResources(), R.drawable.splash);
         Splash = Bitmap.createScaledBitmap(tmp, screenWidth, screenHeight, true);
-        //480x800 4 de biri
-
         int ballSize = screenWidth / 4;
 
         tmp = BitmapFactory.decodeResource(getResources(), R.drawable.ball1);
@@ -115,25 +137,5 @@ public class LoadingView extends View implements Runnable {
                 Balls.add(Bitmap.createScaledBitmap(Balls.get(i), ballSize, ballSize, true));
             }
         }
-
-        ImageContainer.CreateBullet();
-
-        status = 1; // End of loading
-        this.postInvalidate();
-        Helper.sleep(200);
-
-        this.postInvalidate(); //this function calls draw method
-        BallBlastXActivity.instance.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                BallBlastXActivity.instance.setView(GameMode.Splash);
-            }
-        });
-    }
-
-    public void start()
-    {
-        Thread thread = new Thread(this);
-        thread.start();
     }
 }

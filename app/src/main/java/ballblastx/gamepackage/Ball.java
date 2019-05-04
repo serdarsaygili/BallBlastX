@@ -26,7 +26,7 @@ public class Ball {
         y = random.nextInt(BallBlastXActivity.instance.height / 2);
         x = random.nextBoolean() ? -Settings.maxRadious : BallBlastXActivity.instance.width + Settings.maxRadious;
         startY = y;
-        velocityX = x < 0 ? 7 : -7;
+        velocityX = -Math.signum(x) * Settings.velocityX;
         velocityY = 0;
     }
 
