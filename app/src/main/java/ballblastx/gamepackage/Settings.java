@@ -53,10 +53,10 @@ public class Settings {
         maxBallSize = width / 3;
 
         maxVelocityYs = new ArrayList<Integer>();
-        maxVelocityYs.add(24);
-        maxVelocityYs.add(20);
-        maxVelocityYs.add(17);
-        maxVelocityYs.add(15);
+        maxVelocityYs.add(height * 24 / 800);
+        maxVelocityYs.add(height * 20 / 800);
+        maxVelocityYs.add(height * 17 / 800);
+        maxVelocityYs.add(height * 15 / 800);
     }
 
     public static int getGroundStart() {
