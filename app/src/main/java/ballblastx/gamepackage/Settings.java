@@ -15,7 +15,6 @@ public class Settings {
     public static float gravity = 0.5f; // balls come very fast, give me some time to think, changed from 0.6 to 0.5
     public static int ballAddingFrequency = 2000;
     public static int ballSizeCaliber = 20;
-    public static int maxVelocity = 1000; // I dont like this parameter, so i am changing it from 20 to 1000
     public static int debugTextSize = 12;
     public static int mediumTextSize = 24;
     public static int largeTextSize = 36;
@@ -57,6 +56,7 @@ public class Settings {
         maxVelocityYs.add(height * 20 / 800);
         maxVelocityYs.add(height * 17 / 800);
         maxVelocityYs.add(height * 15 / 800);
+        //test
     }
 
     public static int getGroundStart() {
