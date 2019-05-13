@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class Settings {
     public static boolean isProduction = false; // set false for development mode, set true for production
+    public static boolean debugCollisions = false;
 
     public static int screenRefreshRequestDuration = 20;
 

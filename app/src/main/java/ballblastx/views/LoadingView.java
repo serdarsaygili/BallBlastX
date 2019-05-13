@@ -7,12 +7,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import ballblastx.BallBlastXActivity;
 import ballblastx.R;
 import ballblastx.enums.GameMode;
+import ballblastx.gamepackage.CircularCollision;
 import ballblastx.gamepackage.Settings;
 import ballblastx.libraries.Helper;
 import ballblastx.libraries.ImageContainer;
@@ -26,6 +30,7 @@ public class LoadingView extends View implements Runnable {
     public static List <Bitmap> Balls;
     public static List <Integer> ballSizes;
     public static List <Integer> maxVelocityYs;
+    public static List<List<CircularCollision>> Collisions;
     private boolean isDrawn = false;
     public static int groundCorrectionHeight;
 
@@ -75,6 +80,7 @@ public class LoadingView extends View implements Runnable {
 
         Settings.setConfiguration(screenWidth, screenHeight);
         BallBlastXActivity.instance.readSettings();
+        Collisions = ReadCollisions();
 
         status = 2; // Loading Images
         this.postInvalidate();
@@ -156,5 +162,44 @@ public class LoadingView extends View implements Runnable {
                 Balls.add(Bitmap.createScaledBitmap(Balls.get(i), ballSize, ballSize, true));
             }
         }
+    }
+
+    public List<List<CircularCollision>> ReadCollisions()
+    {
+        List<List<CircularCollision>> result = new ArrayList<List<CircularCollision>>();
+
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(
+                    new InputStreamReader(BallBlastXActivity.instance.getAssets().open("collisions.txt")));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(";");
+
+                if (values.length > 1)
+                {
+                    List<CircularCollision> row = new ArrayList<CircularCollision>();
+
+                    for (int i = 1; i < values.length; ++i)
+                    {
+                        CircularCollision collision = new CircularCollision(values[i]);
+                        row.add(collision);
+                    }
+
+                    result.add(row);
+                }
+            }
+        } catch (IOException e) {
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        return result;
     }
 }
