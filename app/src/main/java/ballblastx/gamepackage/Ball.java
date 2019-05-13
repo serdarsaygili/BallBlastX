@@ -46,16 +46,12 @@ public class Ball {
                 velocityX = Math.abs(velocityX);
             }
 
-            if ((velocityY <= Settings.maxVelocity && velocityY >= -2 * Settings.gravity) || !touchedGround || (velocityY < 0 && startY >= y - 0.5 * velocityY * velocityY / Settings.gravity)) {
-                velocityY += Settings.gravity;
-            }
-
+            velocityY += Settings.gravity;
             y += velocityY;
 
             if (y > groundStart - radius) {
                 touchedGround = true;
-                velocityY = Settings.maxVelocityYs.get(ballSizeIndex);
-                velocityY = -10;
+                velocityY = -Settings.maxVelocityYs.get(ballSizeIndex);
             }
 
         }

@@ -14,7 +14,6 @@ public class Settings {
     public static float gravity = 0.5f; // balls come very fast, give me some time to think, changed from 0.6 to 0.5
     public static int ballAddingFrequency = 2000;
     public static int ballSizeCaliber = 20;
-    public static int maxVelocity = 1000; // I dont like this parameter, so i am changing it from 20 to 1000
     public static int debugTextSize = 12;
     public static int mediumTextSize = 24;
     public static int largeTextSize = 36;
@@ -30,6 +29,7 @@ public class Settings {
     public static int groundVerticalPositionY = 600;
     public static int velocityX = 5;
     public static List <Integer> maxVelocityYs;
+    public static int maxBallSize;
 
     private static Random random;
     public static Random getRandom() {
@@ -56,11 +56,13 @@ public class Settings {
         bodyHeight = (int)(bodyWidth * 110 / 126.0);
         bodyWheelRadius = bodyWidth / 4;
         bodyGroundDistance = 7 * bodyWheelRadius / 4;
+        maxBallSize = width / 3;
 
         maxVelocityYs = new ArrayList<Integer>();
-        maxVelocityYs.add((int)(height * 1.1 / gravity));
-        maxVelocityYs.add((int)(height * 0.8 / gravity));
-        maxVelocityYs.add((int)(height * 0.6 / gravity));
-        maxVelocityYs.add((int)(height * 0.35 / gravity));
+        maxVelocityYs.add(height * 24 / 800);
+        maxVelocityYs.add(height * 20 / 800);
+        maxVelocityYs.add(height * 17 / 800);
+        maxVelocityYs.add(height * 15 / 800);
+        //test
     }
 }
