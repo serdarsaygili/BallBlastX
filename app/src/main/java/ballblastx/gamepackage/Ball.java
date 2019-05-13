@@ -31,7 +31,7 @@ public class Ball {
     }
 
     public void move() {
-        int groundStart = Settings.getGroundStart();
+        int groundStart = Settings.groundVerticalPositionY;
 
         x += velocityX;
 
@@ -81,8 +81,8 @@ public class Ball {
 
         ballIndex += ballSizeIndex * 10;
         float currentTopY = drawY - radius;
-        if (currentTopY + 2 * radius > Settings.getGroundStart()) {
-            currentTopY = Settings.getGroundStart() - 2 * radius;
+        if (currentTopY + 2 * radius > Settings.groundVerticalPositionY) {
+            currentTopY = Settings.groundVerticalPositionY - 2 * radius;
         }
 
         canvas.drawBitmap(LoadingView.Balls.get(ballIndex), x - radius, currentTopY, null);

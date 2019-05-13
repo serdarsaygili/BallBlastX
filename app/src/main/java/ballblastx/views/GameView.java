@@ -55,7 +55,7 @@ public class GameView extends View implements Runnable {
         fastCanvas.drawRect(0, 0, w, h, paint);
 
         paint.setColor(0xffB11848);
-        int groundStart = Settings.getGroundStart();
+        int groundStart = Settings.groundVerticalPositionY;
         fastCanvas.drawRect(0, groundStart, w, h, paint);
         fastCanvas.drawBitmap(LoadingView.ground, 0, groundStart - LoadingView.groundCorrectionHeight, null);
 

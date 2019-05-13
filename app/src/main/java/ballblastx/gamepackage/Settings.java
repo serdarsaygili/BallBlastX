@@ -10,7 +10,6 @@ public class Settings {
     public static int screenRefreshRequestDuration = 20;
 
     public static float bulletSpeedMultiplier = 0.01f;
-    public static float playerVerticalPosition = 57;
     public static float maxRadious = 200;
     public static float gravity = 0.5f; // balls come very fast, give me some time to think, changed from 0.6 to 0.5
     public static int ballAddingFrequency = 2000;
@@ -20,10 +19,15 @@ public class Settings {
     public static int mediumTextSize = 24;
     public static int largeTextSize = 36;
     public static int extraLargeTextSize = 64;
-    public static int playerRadius = 30;
     public static int bulletWidth = 5;
     public static int bulletHeight = 8;
     public static int bestScore = 0;
+    public static int bodyWidth = 80;
+    public static int bodyHeight = 60;
+    public static int bodyWheelRadius = 20;
+    public static int bodyGroundDistance = 5;
+
+    public static int groundVerticalPositionY = 600;
     public static int velocityX = 5;
     public static List <Integer> maxVelocityYs;
 
@@ -44,21 +48,19 @@ public class Settings {
         extraLargeTextSize = height / 13;
         maxRadious = width / 4;
         ballSizeCaliber = width / 30;
-        playerRadius = width / 20;
         bulletWidth = (width / 90) / 2 * 2 + 1; // should be odd value to be symmetric
         bulletHeight = height / 100;
-        playerVerticalPosition = height * 0.7f;
+        groundVerticalPositionY = (int)(height * 0.7f) + width / 20;
         velocityX = width / 100;
-
+        bodyWidth = width / 8; // 100
+        bodyHeight = (int)(bodyWidth * 110 / 126.0);
+        bodyWheelRadius = bodyWidth / 4;
+        bodyGroundDistance = 7 * bodyWheelRadius / 4;
 
         maxVelocityYs = new ArrayList<Integer>();
         maxVelocityYs.add((int)(height * 1.1 / gravity));
         maxVelocityYs.add((int)(height * 0.8 / gravity));
         maxVelocityYs.add((int)(height * 0.6 / gravity));
         maxVelocityYs.add((int)(height * 0.35 / gravity));
-    }
-
-    public static int getGroundStart() {
-        return (int)(Settings.playerVerticalPosition + Settings.playerRadius);
     }
 }

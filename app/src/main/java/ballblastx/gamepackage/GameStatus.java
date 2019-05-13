@@ -135,7 +135,7 @@ public class GameStatus {
         paint.setTextSize(Settings.largeTextSize);
 
         float textPositionX = w / 2;
-        float textPositionY = Settings.playerVerticalPosition / 2;
+        float textPositionY = Settings.groundVerticalPositionY / 2;
 
         if (isGameOver) {
             drawTransparentBackground(canvas, paint);

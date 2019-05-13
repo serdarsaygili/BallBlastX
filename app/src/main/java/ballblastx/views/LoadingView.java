@@ -20,7 +20,7 @@ import ballblastx.libraries.ImageContainer;
 public class LoadingView extends View implements Runnable {
 
     Paint paint;
-    public static Bitmap Splash, ground;
+    public static Bitmap Splash, ground, body;
     public static Bitmap clouds[];
     public static int cloudWidths[];
     public static List <Bitmap> Balls;
@@ -138,9 +138,14 @@ public class LoadingView extends View implements Runnable {
         tmp = BitmapFactory.decodeResource(getResources(), R.drawable.cloud2);
         clouds[1] = Bitmap.createScaledBitmap(tmp, cloudWidths[1], cloudWidths[1] * tmp.getHeight() / tmp.getWidth(), true);
 
+        int groundHeight = screenWidth * tmp.getHeight() / tmp.getWidth();
         tmp = BitmapFactory.decodeResource(getResources(), R.drawable.ground); //image should be 1000 * 100, our phone is 480X 800
-        ground = Bitmap.createScaledBitmap(tmp, screenWidth, screenWidth * tmp.getHeight() / tmp.getWidth(), true);
-        groundCorrectionHeight = 60 * tmp.getHeight() / tmp.getWidth();
+        ground = Bitmap.createScaledBitmap(tmp, screenWidth, groundHeight, true);
+
+        groundCorrectionHeight = 62 * groundHeight / tmp.getHeight();
+
+        tmp = BitmapFactory.decodeResource(getResources(), R.drawable.body);
+        body = Bitmap.createScaledBitmap(tmp, Settings.bodyWidth, Settings.bodyHeight, true);
 
         int ballCount = Balls.size();
         ballSizes.add(ballSize);

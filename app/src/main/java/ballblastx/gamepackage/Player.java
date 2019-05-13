@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import ballblastx.BallBlastXActivity;
 import ballblastx.libraries.Helper;
+import ballblastx.views.LoadingView;
 
 public class Player {
     float x, y;
@@ -12,8 +13,8 @@ public class Player {
     BallManager ballManager;
 
     public Player(BulletManager bulletManager, BallManager ballManager) {
-        x = BallBlastXActivity.instance.width / 2;
-        y = Settings.playerVerticalPosition;
+        x = BallBlastXActivity.instance.width / 2; // center
+        y = Settings.groundVerticalPositionY - Settings.bodyHeight - 2 * Settings.bodyWheelRadius + Settings.bodyGroundDistance;
 
         this.bulletManager = bulletManager;
         this.ballManager = ballManager;
@@ -29,9 +30,9 @@ public class Player {
     public boolean checkIfGameOver() {
         synchronized (ballManager.balls) {
             for (Ball ball : ballManager.balls) {
-                double distance = Helper.getEuclideanDistance(x, y, ball.x, ball.y);
+                double distance = Helper.getEuclideanDistance(x, y + Settings.bodyHeight / 2, ball.x, ball.y);
 
-                if (distance < Settings.playerRadius + ball.radius) {
+                if (distance < Settings.bodyWidth / 2 + ball.radius) {
                     return true;
                 }
             }
@@ -45,14 +46,22 @@ public class Player {
     }
 
     public void onDraw(Canvas canvas, Paint paint, boolean isGameOver) {
-        if (isGameOver) {
-            paint.setColor(0xffff0000);
-        }
-        else {
-            paint.setColor(0xff00ff00);
-        }
+        canvas.drawBitmap(LoadingView.body, x - Settings.bodyWidth / 2, y, null );
 
-        canvas.drawCircle(x, y, Settings.playerRadius, paint);
+        // block to be removed
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1);
+        paint.setColor(isGameOver ? 0x88FF0000 : 0x88000000);
+        canvas.drawCircle(x, y + Settings.bodyHeight / 2, Settings.bodyWidth / 2, paint);
+
+        paint.setColor(0xff000000);
+        paint.setStrokeWidth(Settings.bodyWheelRadius / 3);
+        int wheelY = Settings.groundVerticalPositionY - Settings.bodyWheelRadius;
+        canvas.drawCircle(x - Settings.bodyWidth / 2, wheelY, Settings.bodyWheelRadius, paint);
+        canvas.drawCircle(x + Settings.bodyWidth / 2, wheelY, Settings.bodyWheelRadius, paint);
+
+        paint.setStyle(Paint.Style.FILL);
+        //
     }
 
     public void fireBullet(int numBullets) {
