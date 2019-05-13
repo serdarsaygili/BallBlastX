@@ -86,14 +86,14 @@ public class BallManager {
             Ball childBall2 = new Ball(ballSize, ballSizeIndex, ball.startCount / 2);
             childBall1.x = ball.x;
             childBall1.y = ball.y;
-            childBall1.velocityY = -10;
+            childBall1.velocityY = -20 * Settings.gravity;
             childBall1.velocityX = ball.velocityX;
             childBall1.startY = ball.startY;
             childBall1.isGravityStarted = true;
 
             childBall2.x = ball.x;
             childBall2.y = ball.y;
-            childBall2.velocityY = -10;
+            childBall2.velocityY = -20 * Settings.gravity;
             childBall2.velocityX = -ball.velocityX;
             childBall2.startY = ball.startY;
             childBall2.isGravityStarted = true;

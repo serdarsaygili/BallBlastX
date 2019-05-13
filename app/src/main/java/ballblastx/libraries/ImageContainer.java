@@ -16,6 +16,7 @@ public class ImageContainer {
         if (paint == null) {
             paint = new Paint();
 
+            paint.setAntiAlias(true);
             paint.setTextSize(Settings.debugTextSize);
             paint.setStyle(Paint.Style.FILL_AND_STROKE);
             paint.setStrokeWidth(1);

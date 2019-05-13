@@ -42,7 +42,7 @@ public class Player {
     }
 
     public void move(float fingerX) {
-        x = (2 * x + fingerX) / 3;
+        x = (5 * x + fingerX) / 6;
     }
 
     public void onDraw(Canvas canvas, Paint paint, boolean isGameOver) {
@@ -54,14 +54,42 @@ public class Player {
         paint.setColor(isGameOver ? 0x88FF0000 : 0x88000000);
         canvas.drawCircle(x, y + Settings.bodyHeight / 2, Settings.bodyWidth / 2, paint);
 
+        // wheels
         paint.setColor(0xff000000);
         paint.setStrokeWidth(Settings.bodyWheelRadius / 3);
         int wheelY = Settings.groundVerticalPositionY - Settings.bodyWheelRadius;
         canvas.drawCircle(x - Settings.bodyWidth / 2, wheelY, Settings.bodyWheelRadius, paint);
         canvas.drawCircle(x + Settings.bodyWidth / 2, wheelY, Settings.bodyWheelRadius, paint);
 
+        // wheel arms
+        DrawWheelArms(canvas, paint, x - Settings.bodyWidth / 2, wheelY, Settings.bodyWheelRadius);
+        DrawWheelArms(canvas, paint, x + Settings.bodyWidth / 2, wheelY, Settings.bodyWheelRadius);
+
         paint.setStyle(Paint.Style.FILL);
         //
+    }
+
+    private void DrawWheelArms(Canvas canvas, Paint paint, double x, double y, double r)
+    {
+        paint.setStrokeWidth(Settings.bodyWheelRadius / 5);
+
+        int numWheelArms = 3;
+        double wheelAngle = 2 * Math.PI / numWheelArms;
+        double diffCenter = x - BallBlastXActivity.instance.width / 2;
+        double radian = 2 * diffCenter / (Settings.bodyWheelRadius) / Math.PI;
+
+        for (int i = 0; i < numWheelArms; ++i)
+        {
+            double angle = wheelAngle * i + radian;
+
+            double startX = x + Math.cos(angle) * r;
+            double startY = y + Math.sin(angle) * r;
+
+            double endX = x - Math.cos(angle) * r;
+            double endY = y - Math.sin(angle) * r;
+
+            canvas.drawLine((float)startX, (float)startY, (float)endX, (float)endY, paint);
+        }
     }
 
     public void fireBullet(int numBullets) {

@@ -41,7 +41,7 @@ public class Settings {
     }
 
     public static void setConfiguration(int width, int height) { // assume: 812x375
-        gravity = height / 1600f;
+        gravity = height / 2400f;
         debugTextSize = height / 67;
         mediumTextSize = height / 33;
         largeTextSize = height / 22;
@@ -51,7 +51,7 @@ public class Settings {
         bulletWidth = (width / 90) / 2 * 2 + 1; // should be odd value to be symmetric
         bulletHeight = height / 100;
         groundVerticalPositionY = (int)(height * 0.7f) + width / 20;
-        velocityX = width / 100;
+        velocityX = width / 300;
         bodyWidth = width / 8; // 100
         bodyHeight = (int)(bodyWidth * 110 / 126.0);
         bodyWheelRadius = bodyWidth / 4;
@@ -59,10 +59,11 @@ public class Settings {
         maxBallSize = width / 3;
 
         maxVelocityYs = new ArrayList<Integer>();
-        maxVelocityYs.add(height * 24 / 800);
-        maxVelocityYs.add(height * 20 / 800);
-        maxVelocityYs.add(height * 17 / 800);
-        maxVelocityYs.add(height * 15 / 800);
+        double coeff = height * Math.sqrt(2 * gravity) / 800;
+        maxVelocityYs.add((int)(24 * coeff));
+        maxVelocityYs.add((int)(21 * coeff));
+        maxVelocityYs.add((int)(19 * coeff));
+        maxVelocityYs.add((int)(16 * coeff));
         //test
     }
 }

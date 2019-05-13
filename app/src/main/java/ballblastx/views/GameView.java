@@ -68,21 +68,23 @@ public class GameView extends View implements Runnable {
         canvas.drawBitmap(doubleBufferingImage, 0, 0, null);
     }
 
+    boolean isMoving = false;
+    float lastX = BallBlastXActivity.instance.width / 2;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                isMoving = true;
                 gameStatus.setFingerStatus(true);
                 gameStatus.newActivity();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (gameStatus.canMove()) {
-                    player.move(event.getX());
-                }
+                lastX = event.getX();
                 break;
             case MotionEvent.ACTION_UP:
+                isMoving = true;
                 gameStatus.setFingerStatus(false);
                 break;
         }
@@ -111,6 +113,13 @@ public class GameView extends View implements Runnable {
             }
             else {
                 player.fireBullet(gameStatus.level + 2);
+            }
+
+            if (isMoving)
+            {
+                if (gameStatus.canMove()) {
+                    player.move(lastX);
+                }
             }
 
             cloudManager.move();
