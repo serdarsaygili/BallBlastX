@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import ballblastx.BallBlastXActivity;
+import ballblastx.gamepackage.BallBlastManager;
 import ballblastx.gamepackage.BallManager;
 import ballblastx.gamepackage.BulletManager;
 import ballblastx.gamepackage.CloudManager;
@@ -24,6 +25,7 @@ public class GameView extends View implements Runnable {
     BulletManager bulletManager;
     BallManager ballManager;
     CloudManager cloudManager;
+    BallBlastManager ballBlastManager;
     Player player;
     GameStatus gameStatus;
     Bitmap doubleBufferingImage;
@@ -35,9 +37,10 @@ public class GameView extends View implements Runnable {
         doubleBufferingImage = Bitmap.createBitmap(BallBlastXActivity.instance.width, BallBlastXActivity.instance.height, Bitmap.Config.ARGB_8888);
         fastCanvas = new Canvas(doubleBufferingImage);
 
+        ballBlastManager = new BallBlastManager();
         bulletManager = new BulletManager();
         cloudManager = new CloudManager();
-        ballManager = new BallManager(bulletManager);
+        ballManager = new BallManager(bulletManager, ballBlastManager);
         player = new Player(bulletManager, ballManager);
         gameStatus = new GameStatus(ballManager, bulletManager, player);
 
@@ -45,8 +48,11 @@ public class GameView extends View implements Runnable {
         start();
     }
 
+    float avgDuration = 0;
     @Override
     public void onDraw(Canvas canvas) {
+        long startTime = System.currentTimeMillis();
+
         int w = BallBlastXActivity.instance.width;
         int h = BallBlastXActivity.instance.height;
 
@@ -62,8 +68,20 @@ public class GameView extends View implements Runnable {
         cloudManager.onDraw(fastCanvas, paint);
         player.onDraw(fastCanvas, paint, gameStatus.isGameOver);
         bulletManager.onDraw(fastCanvas, paint);
+        ballBlastManager.onDraw(fastCanvas, paint);
         ballManager.onDraw(fastCanvas, paint);
         gameStatus.onDraw(fastCanvas, paint);
+
+        if (!Settings.isProduction)
+        {
+            avgDuration = ((System.currentTimeMillis() - startTime) + 5 * avgDuration) / 6;
+
+            paint.setTextAlign(Paint.Align.LEFT);
+            paint.setTextSize(w / 25);
+            paint.setColor(0xff000000);
+
+            fastCanvas.drawText("Draw Duration: " + (int)avgDuration + " ms (should be < 20 ms)", 20, h - 20, paint);
+        }
 
         canvas.drawBitmap(doubleBufferingImage, 0, 0, null);
     }
@@ -122,6 +140,7 @@ public class GameView extends View implements Runnable {
                 }
             }
 
+            ballBlastManager.move();
             cloudManager.move();
             bulletManager.moveBullets();
             bulletManager.removeBullets();

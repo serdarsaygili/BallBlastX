@@ -14,10 +14,12 @@ public class BallManager {
     private int gameLevel;
     Long lastBallAddTime;
     BulletManager bulletManager;
+    BallBlastManager ballBlastManager;
 
-    public BallManager(BulletManager bulletManager) {
+    public BallManager(BulletManager bulletManager, BallBlastManager ballBlastManager) {
         balls = new ArrayList<Ball>();
         this.bulletManager = bulletManager;
+        this.ballBlastManager = ballBlastManager;
         lastBallAddTime = System.currentTimeMillis();
     }
 
@@ -67,7 +69,10 @@ public class BallManager {
                         }
                     }
 
-                    if (balls.get(i).count <= 0) {
+                    Ball ball = balls.get(i);
+                    if (ball.count <= 0) {
+                        ballBlastManager.Add(ball.x, ball.y, ball.radius);
+
                         popBall(balls.get(i));
                         balls.remove(i);
                     }
@@ -118,6 +123,7 @@ public class BallManager {
 
     public void onDraw(Canvas canvas, Paint paint) {
         paint.setTextAlign(Paint.Align.CENTER);
+        paint.setStyle(Paint.Style.FILL);
 
         synchronized (balls) {
             for (Ball ball: balls) {
