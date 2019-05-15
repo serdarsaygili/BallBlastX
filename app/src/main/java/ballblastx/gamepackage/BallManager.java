@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import java.util.ArrayList;
 import java.util.List;
 
+import ballblastx.enums.Sound;
+import ballblastx.libraries.SoundManager;
 import ballblastx.views.LoadingView;
 
 public class BallManager {
@@ -72,6 +74,7 @@ public class BallManager {
                     Ball ball = balls.get(i);
                     if (ball.count <= 0) {
                         ballBlastManager.Add(ball.x, ball.y, ball.radius);
+                        SoundManager.Play(Sound.Pat);
 
                         popBall(balls.get(i));
                         balls.remove(i);

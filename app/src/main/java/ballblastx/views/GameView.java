@@ -48,7 +48,7 @@ public class GameView extends View implements Runnable {
         start();
     }
 
-    float avgDuration = 0;
+    float avgDuration = 10;
     @Override
     public void onDraw(Canvas canvas) {
         long startTime = System.currentTimeMillis();
@@ -74,13 +74,13 @@ public class GameView extends View implements Runnable {
 
         if (!Settings.isProduction)
         {
-            avgDuration = ((System.currentTimeMillis() - startTime) + 5 * avgDuration) / 6;
+            avgDuration = ((System.currentTimeMillis() - startTime) + 200 * avgDuration) / 201;
 
             paint.setTextAlign(Paint.Align.LEFT);
             paint.setTextSize(w / 25);
             paint.setColor(0xff000000);
 
-            fastCanvas.drawText("Draw Duration: " + (int)avgDuration + " ms (should be < 20 ms)", 20, h - 20, paint);
+            fastCanvas.drawText("Max FPS: " + (int)(1000 / (avgDuration + 0.1)) + " (should be > 50)", 20, h - 20, paint);
         }
 
         canvas.drawBitmap(doubleBufferingImage, 0, 0, null);

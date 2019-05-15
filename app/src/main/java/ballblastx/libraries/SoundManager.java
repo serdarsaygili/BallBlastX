@@ -56,6 +56,7 @@ public class SoundManager
             case GameOver: result = R.raw.fail; break;
             case Win: result = R.raw.win; break;
             case Completed: result = R.raw.completed; break;
+            case Pat: result = R.raw.pat; break;
         }
 
         return result;
